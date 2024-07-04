@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["Convex_hull","__pyfunction_Convex_hull","convex_hull","cross"]};

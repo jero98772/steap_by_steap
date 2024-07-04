@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["QueueF64","QueueI32"]};

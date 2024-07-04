@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["SymbolLocal"],"fn":["my_nfa"],"struct":["NFA","State","Symbol"]};

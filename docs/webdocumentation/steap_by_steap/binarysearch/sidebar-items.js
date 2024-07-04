@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["Binary_search","__pyfunction_Binary_search"]};
