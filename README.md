@@ -3,7 +3,7 @@
 
 ### Logo
 
-![image]()
+![image](https://raw.githubusercontent.com/jero98772/steap_by_steap/main/docs/logo.jpeg)
 
 
 ### Features
