@@ -40,7 +40,8 @@ pip install steap_by_steap
 ```
 
 ### Code Documentation
-Link to or include documentation for each function and class.
+
+[https://jero98772.github.io/steap_by_steap/steap_by_steap/index.html](https://jero98772.github.io/steap_by_steap/steap_by_steap/index.html)
 
 ### Purpose
 The purpose of "steap_by_steap" is to provide a comprehensive library of algorithms, enabling users to learn and implement various data structures and algorithms.
