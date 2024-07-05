@@ -1,9 +1,15 @@
 # steap_by_steap
-"steap_by_steap" is a comprehensive Python library designed to facilitate learning and implementation of fundamental algorithms and data structures. From efficient searching and sorting techniques to advanced data structures like trees and graphs, this library aims to empower developers with robust tools for algorithmic problem-solving. Whether you're a student delving into algorithms or a seasoned developer seeking reliable implementations, "steap_by_steap" provides a rich collection of algorithms, backed by clear documentation and easy integration.
-
-### Logo
 
 ![image](https://raw.githubusercontent.com/jero98772/steap_by_steap/main/docs/logo.jpeg)
+
+
+      before i create it i was searching if "steap_by_steap" was available, and after publishing it I realized that step_by_step did too.
+
+"steap_by_steap" is a comprehensive Python library designed to facilitate learning and implementation of fundamental algorithms and data structures. From efficient searching and sorting techniques to advanced data structures like trees and graphs, this library aims to empower developers with robust tools for algorithmic problem-solving. Whether you're a student delving into algorithms or a seasoned developer seeking reliable implementations, "steap_by_steap" provides a rich collection of algorithms, backed by clear documentation and easy integration.
+
+steap mean:"A state when a line of code is excuting", it have the a in the middle beacause the word Algorithms start with A
+
+
 
 
 ### Features
