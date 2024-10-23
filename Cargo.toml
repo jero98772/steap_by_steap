@@ -14,5 +14,6 @@ image = "0.24.6"
 rustfft = "6.0.1"
 rand = "0.8"
 ndarray = "0.15.4"
-
+num-bigint = "0.4"
+num-traits = "0.2"
 
