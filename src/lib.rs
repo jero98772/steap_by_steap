@@ -27,6 +27,8 @@ mod nonfiniteautomata;
 mod regex;
 mod compression;
 mod simplexmethod;
+mod criptografy;
+
 
 use unionfind::UnionFind;
 use binarysearch::Binary_search;
@@ -52,7 +54,8 @@ use linesegment::{LineSegment};
 use nonfiniteautomata::{NFA,Symbol,State};
 use substringsearch::{BrutalForceSearch,KMPSearch,BoyerMooreSearch,RabinKarpSearch};
 use sort::{Selection,Insertion,Shell,Quick,Merge,MsdRadix,LsdRadix,RadixQuicksort};
-use compression::{HuffmanCodes,RunLengthEncode,RunLengthDecode,LZWCompress,LZWDecompress};
+use compression::{HuffmanCodes,RunLengthEncode,RunLengthDecode,LZWCompress,LZWDecompress,HuffmanDecompress,HuffmanCompress,DecompressImageFFT,CompressImageFFT};
+use criptografy::{DecryptXOR,EncryptXOR};
 
 #[pymodule]
 fn steap_by_steap(m: &PyModule) -> PyResult<()> {
@@ -102,6 +105,11 @@ fn steap_by_steap(m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(RunLengthDecode, m)?)?;
     m.add_function(wrap_pyfunction!(LZWCompress, m)?)?;
     m.add_function(wrap_pyfunction!(LZWDecompress, m)?)?;
-
+    m.add_function(wrap_pyfunction!(HuffmanCompress, m)?)?;
+    m.add_function(wrap_pyfunction!(HuffmanDecompress, m)?)?;
+    m.add_function(wrap_pyfunction!(EncryptXOR, m)?)?;
+    m.add_function(wrap_pyfunction!(DecryptXOR, m)?)?;
+    m.add_function(wrap_pyfunction!(CompressImageFFT, m)?)?;
+    m.add_function(wrap_pyfunction!(DecompressImageFFT, m)?)?;
     Ok(())
 }

@@ -46,26 +46,40 @@ impl SuffixArray {
     fn search(&self, pattern: &str) -> PyResult<Vec<usize>> {
         let mut left = 0;
         let mut right = self.sa.len();
+        
+        // Handle empty pattern or text
+        if pattern.is_empty() || self.text.is_empty() {
+            return Ok(Vec::new());
+        }
 
         while left < right {
             let mid = (left + right) / 2;
             let suffix = &self.text[self.sa[mid]..];
-            match suffix.starts_with(pattern) {
-                true => right = mid,
-                false => match pattern.cmp(&suffix[..pattern.len().min(suffix.len())]) {
+            
+            if suffix.len() < pattern.len() {
+                match pattern.cmp(&suffix) {
                     Ordering::Less => right = mid,
                     Ordering::Greater => left = mid + 1,
                     Ordering::Equal => break,
-                },
+                }
+            } else {
+                match pattern.cmp(&suffix[..pattern.len()]) {
+                    Ordering::Less => right = mid,
+                    Ordering::Greater => left = mid + 1,
+                    Ordering::Equal => break,
+                }
             }
         }
 
         let mut results = Vec::new();
-        while left < self.sa.len() && self.text[self.sa[left]..].starts_with(pattern) {
+        while left < self.sa.len() {
+            let suffix = &self.text[self.sa[left]..];
+            if !suffix.starts_with(pattern) {
+                break;
+            }
             results.push(self.sa[left]);
             left += 1;
         }
-
         Ok(results)
     }
 }
@@ -73,38 +87,50 @@ impl SuffixArray {
 impl SuffixArray {
     fn build_suffix_array(&mut self) {
         let n = self.text.len();
+        if n == 0 {
+            return;
+        }
+
         let mut rank = vec![0; n];
         let mut tmp = vec![0; n];
 
-        // Initialize ranks
+        // Initialize ranks with ASCII values
         for (i, &c) in self.text.as_bytes().iter().enumerate() {
             rank[i] = c as usize;
         }
 
-        for k in 1..n {
+        let mut k = 1;
+        while k < n {
+            // Sort suffixes based on their first 2*k characters
             self.sa.sort_by_key(|&i| {
-                if i + k < n {
-                    (rank[i], rank[i + k])
-                } else {
-                    (rank[i], 0)
-                }
+                let next_rank = if i + k < n { rank[i + k] } else { 0 };
+                (rank[i], next_rank)
             });
 
+            // Update ranks
             tmp[self.sa[0]] = 0;
             for i in 1..n {
-                tmp[self.sa[i]] = tmp[self.sa[i - 1]]
-                    + if (rank[self.sa[i]], rank[self.sa[i] + k.min(n - self.sa[i])]) 
-                         != (rank[self.sa[i - 1]], rank[self.sa[i - 1] + k.min(n - self.sa[i - 1])]) {
-                        1
-                    } else {
-                        0
-                    };
+                let curr_pair = (
+                    rank[self.sa[i]], 
+                    if self.sa[i] + k < n { rank[self.sa[i] + k] } else { 0 }
+                );
+                let prev_pair = (
+                    rank[self.sa[i - 1]], 
+                    if self.sa[i - 1] + k < n { rank[self.sa[i - 1] + k] } else { 0 }
+                );
+                
+                tmp[self.sa[i]] = tmp[self.sa[i - 1]] + (curr_pair != prev_pair) as usize;
             }
+
+            // Swap rank arrays
             std::mem::swap(&mut rank, &mut tmp);
 
+            // Early termination if all suffixes are sorted
             if rank[self.sa[n - 1]] == n - 1 {
                 break;
             }
+
+            k *= 2;
         }
     }
 }

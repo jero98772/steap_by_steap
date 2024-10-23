@@ -1,7 +1,26 @@
 import steap_by_steap
 
+sa = steap_by_steap.SuffixArray('example')
+print(sa.get_suffix_array())
+print(sa.search("exam"))
 
 
+
+c=steap_by_steap.LZWCompress("helloo")
+print(c)
+d=steap_by_steap.LZWDecompress(c)
+
+d,hc=steap_by_steap.HuffmanCompress("hellooo")
+hd=steap_by_steap.HuffmanDecompress(d,hc)
+print(hc,hd)
+
+inimg="1.jpg"
+outimg="ans.jpg"
+r=0.99
+steap_by_steap.CompressImageFFT(inimg,outimg,r)
+steap_by_steap.DecompressImageFFT(outimg,"ans2.jpg")
+
+print(str(d),"\n\n")
 #print(dir(steap_by_steap))
 uf = steap_by_steap.UnionFind(10)
 
