@@ -16,4 +16,4 @@ rand = "0.8"
 ndarray = "0.15.4"
 num-bigint = "0.4"
 num-traits = "0.2"
-
+aes = "0.7" # Add the aes crate for AES encryption

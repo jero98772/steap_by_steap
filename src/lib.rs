@@ -55,7 +55,7 @@ use nonfiniteautomata::{NFA,Symbol,State};
 use substringsearch::{BrutalForceSearch,KMPSearch,BoyerMooreSearch,RabinKarpSearch};
 use sort::{Selection,Insertion,Shell,Quick,Merge,MsdRadix,LsdRadix,RadixQuicksort};
 use compression::{HuffmanCodes,RunLengthEncode,RunLengthDecode,LZWCompress,LZWDecompress,HuffmanDecompress,HuffmanCompress,DecompressImageFFT,CompressImageFFT};
-use criptografy::{DecryptXOR,EncryptXOR};
+use criptografy::{DecryptXOR,EncryptXOR,EncryptRSA,GenerateKey,DecryptRSA,RandomPrime,DecryptCesar,EncryptCesar,EncryptRailFence,DecryptRailFence};
 
 #[pymodule]
 fn steap_by_steap(m: &PyModule) -> PyResult<()> {
@@ -111,5 +111,14 @@ fn steap_by_steap(m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(DecryptXOR, m)?)?;
     m.add_function(wrap_pyfunction!(CompressImageFFT, m)?)?;
     m.add_function(wrap_pyfunction!(DecompressImageFFT, m)?)?;
+    m.add_function(wrap_pyfunction!(EncryptCesar, m)?)?;
+    m.add_function(wrap_pyfunction!(DecryptCesar, m)?)?;
+    m.add_function(wrap_pyfunction!(EncryptRailFence, m)?)?;
+    m.add_function(wrap_pyfunction!(DecryptRailFence, m)?)?;
+    m.add_function(wrap_pyfunction!(RandomPrime, m)?)?;
+    m.add_function(wrap_pyfunction!(GenerateKey, m)?)?;
+    m.add_function(wrap_pyfunction!(EncryptRSA, m)?)?;
+    m.add_function(wrap_pyfunction!(DecryptRSA, m)?)?;
     Ok(())
 }
+  
