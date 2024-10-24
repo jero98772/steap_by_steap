@@ -40,8 +40,6 @@ pub fn DecryptXOR(data: &str, key: char) -> PyResult<String> {
 
 // A constant for the character set
 const CHARS: &str = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-// Function to check if a number is prime
 fn is_prime(num: usize) -> bool {
     if num < 2 {
         return false;
@@ -53,8 +51,18 @@ fn is_prime(num: usize) -> bool {
     }
     true
 }
-
-// Function to generate a random prime number
+/// Generates a random prime number
+///
+/// # Arguments
+/// * `limit` - The upper limit within which to find a prime number.
+///
+/// # Returns
+/// * A random prime number within the specified limit.
+///
+/// # Example
+/// ```python
+/// prime = RandomPrime(100)
+/// ```
 fn get_random_prime(limit: usize) -> usize {
     let mut rng = rand::thread_rng();
     loop {
@@ -97,7 +105,21 @@ fn private_key_d(e: usize, fi: usize) -> usize {
     }
 }
 
-// Key generation
+/// Generates RSA keys
+///
+/// Given two prime numbers, this function generates the RSA public and private keys.
+///
+/// # Arguments
+/// * `key1` - The first prime number.
+/// * `key2` - The second prime number.
+///
+/// # Returns
+/// * A tuple `(n, e, d)` where `n` is the modulus, `e` is the public key exponent, and `d` is the private key exponent.
+///
+/// # Example
+/// ```python
+/// n, e, d = GenerateKey(61, 53)
+/// ```
 fn gen_key(key1: usize, key2: usize) -> (usize, usize, usize) {
     let n = key1 * key2;
     let fi = (key1 - 1) * (key2 - 1);
@@ -106,7 +128,22 @@ fn gen_key(key1: usize, key2: usize) -> (usize, usize, usize) {
     (n, e, d)
 }
 
-// Encryption
+/// RSA Encryption
+///
+/// Encrypts a message using the RSA encryption scheme.
+///
+/// # Arguments
+/// * `msg` - The message to encrypt.
+/// * `e` - The public key exponent.
+/// * `n` - The modulus.
+///
+/// # Returns
+/// * Encrypted message as a list of numbers.
+///
+/// # Example
+/// ```python
+/// encrypted_msg = EncryptRSA("HELLO", e, n)
+/// ```
 fn encrypt_rsa(msg: &str, e: usize, n: usize) -> Vec<usize> {
     msg.chars()
         .map(|c| {
@@ -116,7 +153,22 @@ fn encrypt_rsa(msg: &str, e: usize, n: usize) -> Vec<usize> {
         .collect()
 }
 
-// Decryption
+/// RSA Decryption
+///
+/// Decrypts a message encrypted with RSA.
+///
+/// # Arguments
+/// * `cifrate` - The encrypted message as a list of numbers.
+/// * `d` - The private key exponent.
+/// * `n` - The modulus.
+///
+/// # Returns
+/// * Decrypted message as a string.
+///
+/// # Example
+/// ```python
+/// decrypted_msg = DecryptRSA(encrypted_msg, d, n)
+/// ```
 fn decrypt_rsa(cifrate: &[usize], d: usize, n: usize) -> String {
     cifrate
         .iter()
@@ -147,22 +199,22 @@ pub fn DecryptRSA(cifrate: Vec<usize>, d: usize, n: usize) -> String {
     decrypt_rsa(&cifrate, d, n)
 }
 
-/// A simple implementation of the Caesar Cipher.
-#[pyfunction]
-fn caesar_cipher(text: String, shift: usize) -> String {
-    let mut encrypted = String::new();
-    for c in text.chars() {
-        if c.is_ascii_alphabetic() {
-            let base = if c.is_ascii_uppercase() { 'A' } else { 'a' };
-            let new_char = (c as u8 - base as u8 + shift as u8) % 26 + base as u8;
-            encrypted.push(new_char as char);
-        } else {
-            encrypted.push(c);
-        }
-    }
-    encrypted
-}
 
+/// Caesar Cipher Encryption
+///
+/// Encrypts the input text using Caesar cipher with a given shift.
+///
+/// # Arguments
+/// * `text` - The input text to encrypt.
+/// * `shift` - The number of positions to shift characters.
+///
+/// # Returns
+/// * The encrypted text.
+///
+/// # Example
+/// ```python
+/// encrypted = EncryptCesar("HELLO", 3)
+/// ```
 #[pyfunction]
 pub fn EncryptCesar(text: &str, shift: usize) -> String {
     let mut encrypted = String::new();
@@ -185,13 +237,43 @@ pub fn EncryptCesar(text: &str, shift: usize) -> String {
     encrypted
 }
 
-/// Decrypts the input text using Caesar cipher with a given shift.
+
+
+/// Caesar Cipher Decryption
+///
+/// Decrypts the input text encrypted with Caesar cipher using a given shift.
+///
+/// # Arguments
+/// * `text` - The encrypted text.
+/// * `shift` - The number of positions the characters were shifted.
+///
+/// # Returns
+/// * The decrypted text.
+///
+/// # Example
+/// ```python
+/// decrypted = DecryptCesar(encrypted, 3)
+/// ```
 #[pyfunction]
 pub fn DecryptCesar(text: &str, shift: usize) -> String {
     EncryptCesar(text, 26 - shift)
 }
 
+/// Rail Fence Cipher Encryption
+///
 /// Encrypts the input text using Rail Fence cipher with a given number of rails.
+///
+/// # Arguments
+/// * `text` - The input text to encrypt.
+/// * `rails` - The number of rails to use in the cipher.
+///
+/// # Returns
+/// * The encrypted text.
+///
+/// # Example
+/// ```python
+/// encrypted = EncryptRailFence("HELLO", 3)
+/// ```
 #[pyfunction]
 pub fn EncryptRailFence(text: &str, rails: usize) -> String {
     if rails == 0 {
@@ -213,7 +295,20 @@ pub fn EncryptRailFence(text: &str, rails: usize) -> String {
     rail.concat()
 }
 
-/// Decrypts the input text using Rail Fence cipher with a given number of rails.
+///
+/// Decrypts the input text encrypted using Rail Fence cipher with a given number of rails.
+///
+/// # Arguments
+/// * `text` - The encrypted text.
+/// * `rails` - The number of rails used in the cipher.
+///
+/// # Returns
+/// * The decrypted text.
+///
+/// # Example
+/// ```python
+/// decrypted = DecryptRailFence(encrypted, 3)
+/// ```
 #[pyfunction]
 pub fn DecryptRailFence(text: &str, rails: usize) -> String {
     let len = text.len();

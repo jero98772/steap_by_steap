@@ -112,8 +112,8 @@ fn steap_by_steap(m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(CompressImageFFT, m)?)?;
     m.add_function(wrap_pyfunction!(DecompressImageFFT, m)?)?;
     m.add_function(wrap_pyfunction!(EncryptCesar, m)?)?;
-    m.add_function(wrap_pyfunction!(DecryptCesar, m)?)?;
     m.add_function(wrap_pyfunction!(EncryptRailFence, m)?)?;
+    m.add_function(wrap_pyfunction!(DecryptCesar, m)?)?;
     m.add_function(wrap_pyfunction!(DecryptRailFence, m)?)?;
     m.add_function(wrap_pyfunction!(RandomPrime, m)?)?;
     m.add_function(wrap_pyfunction!(GenerateKey, m)?)?;

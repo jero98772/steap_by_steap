@@ -36,51 +36,68 @@ impl SuffixArray {
         Ok(self.sa.clone())
     }
 
-    /// Perform a binary search to find occurrences of a pattern in the text.
-    ///
-    /// Args:
-    ///     pattern (str): The pattern to search for.
+
+/// Perform a binary search to find occurrences of a pattern in the text.
+///
+/// Args:
+///     pattern (str): The pattern to search for.
+///
+/// Returns:
+///     List[int]: A list of starting positions where the pattern occurs in the text.
+fn search(&self, pattern: &str) -> PyResult<Vec<usize>> {
+    let mut left = 0;
+    let mut right = self.sa.len();
+    let mut results = Vec::new();
+
+    // Handle empty pattern or text
+    if pattern.is_empty() || self.text.is_empty() {
+        return Ok(results);
+    }
+
+    // Perform binary search to find the first occurrence of the pattern
+    while left < right {
+        let mid = (left + right) / 2;
+        let suffix = &self.text[self.sa[mid]..];
+
+        let cmp_result = if suffix.len() < pattern.len() {
+            pattern.cmp(suffix)
+        } else {
+            pattern.cmp(&suffix[..pattern.len()])
+        };
+
+        match cmp_result {
+            Ordering::Less => right = mid,
+            Ordering::Greater => left = mid + 1,
+            Ordering::Equal => {
+                // If we found a match, find all occurrences
+                let mut match_pos = mid;
+
+                // Check to the left for any more matches
+                while match_pos > 0 && self.text[self.sa[match_pos - 1]..].starts_with(pattern) {
+                    match_pos -= 1;
+                }
+
+                // Collect all matching positions
+                while match_pos < self.sa.len() && self.text[self.sa[match_pos]..].starts_with(pattern) {
+                    results.push(self.sa[match_pos]);
+                    match_pos += 1;
+                }
+
+                return Ok(results);
+            }
+        }
+    }
+
+    Ok(results)
+}
+
+    /// Get all suffixes of the text.
     ///
     /// Returns:
-    ///     List[int]: A list of starting positions where the pattern occurs in the text.
-    fn search(&self, pattern: &str) -> PyResult<Vec<usize>> {
-        let mut left = 0;
-        let mut right = self.sa.len();
-        
-        // Handle empty pattern or text
-        if pattern.is_empty() || self.text.is_empty() {
-            return Ok(Vec::new());
-        }
-
-        while left < right {
-            let mid = (left + right) / 2;
-            let suffix = &self.text[self.sa[mid]..];
-            
-            if suffix.len() < pattern.len() {
-                match pattern.cmp(&suffix) {
-                    Ordering::Less => right = mid,
-                    Ordering::Greater => left = mid + 1,
-                    Ordering::Equal => break,
-                }
-            } else {
-                match pattern.cmp(&suffix[..pattern.len()]) {
-                    Ordering::Less => right = mid,
-                    Ordering::Greater => left = mid + 1,
-                    Ordering::Equal => break,
-                }
-            }
-        }
-
-        let mut results = Vec::new();
-        while left < self.sa.len() {
-            let suffix = &self.text[self.sa[left]..];
-            if !suffix.starts_with(pattern) {
-                break;
-            }
-            results.push(self.sa[left]);
-            left += 1;
-        }
-        Ok(results)
+    ///     List[str]: A list of all suffixes in the text.
+    fn get_suffixes(&self) -> PyResult<Vec<String>> {
+        let suffixes: Vec<String> = self.sa.iter().map(|&i| self.text[i..].to_string()).collect();
+        Ok(suffixes)
     }
 }
 

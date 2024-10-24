@@ -1,8 +1,10 @@
 import steap_by_steap
 
-sa = steap_by_steap.SuffixArray('example')
-print(sa.get_suffix_array())
-print(sa.search("exam"))
+sa = steap_by_steap.SuffixArray('banana')
+print(sa.get_suffix_array(),"must be [5, 3, 1, 0, 4, 2]")
+print(sa.search("ana"),"\n\n")#3
+
+
 
 c=steap_by_steap.LZWCompress("helloo")
 print(c)
@@ -21,34 +23,6 @@ if image:
     r=0.99
     steap_by_steap.CompressImageFFT(inimg,outimg,r)
     steap_by_steap.DecompressImageFFT(outimg,"ans2.jpg")
-
-
-
-# Generate a random prime number
-limit = 10
-random_prime = steap_by_steap.py_get_random_prime(limit)
-print(f"Random Prime: {random_prime}")
-
-# Generate keys
-key1 = steap_by_steap.py_get_random_prime(limit)
-key2 = steap_by_steap.py_get_random_prime(limit)
-n, e, d = steap_by_steap.py_gen_key(key1, key2)
-print(f"Public Key (n, e): ({n}, {e})")
-print(f"Private Key (d): {d}")
-
-# Encrypt a message
-message = "HOLA"
-encrypted_msg = steap_by_steap.py_encrypt_rsa(message, e, n)
-print(f"Encrypted Message: {encrypted_msg}")
-
-# Decrypt the message
-decrypted_msg = steap_by_steap.py_decrypt_rsa(encrypted_msg, d, n)
-print(f"Decrypted Message: {decrypted_msg}")
-
-
-
-
-
 
 
 #print(dir(steap_by_steap))
