@@ -1,6 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/suffixarray.rs`."><title>suffixarray.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="steap_by_steap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29) (Arch Linux rust 1:1.78.0-1)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
-            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../steap_by_steap/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/suffixarray.rs`."><title>suffixarray.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="steap_by_steap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -110,6 +109,49 @@
 <a href="#108" id="108">108</a>
 <a href="#109" id="109">109</a>
 <a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>pyo3::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>pyo3::types::PyList;
 <span class="kw">use </span>std::cmp::Ordering;
@@ -148,75 +190,118 @@
         <span class="prelude-val">Ok</span>(<span class="self">self</span>.sa.clone())
     }
 
-    <span class="doccomment">/// Perform a binary search to find occurrences of a pattern in the text.
-    ///
-    /// Args:
-    ///     pattern (str): The pattern to search for.
-    ///
-    /// Returns:
-    ///     List[int]: A list of starting positions where the pattern occurs in the text.
-    </span><span class="kw">fn </span>search(<span class="kw-2">&amp;</span><span class="self">self</span>, pattern: <span class="kw-2">&amp;</span>str) -&gt; PyResult&lt;Vec&lt;usize&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>left = <span class="number">0</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>right = <span class="self">self</span>.sa.len();
 
-        <span class="kw">while </span>left &lt; right {
-            <span class="kw">let </span>mid = (left + right) / <span class="number">2</span>;
-            <span class="kw">let </span>suffix = <span class="kw-2">&amp;</span><span class="self">self</span>.text[<span class="self">self</span>.sa[mid]..];
-            <span class="kw">match </span>suffix.starts_with(pattern) {
-                <span class="bool-val">true </span>=&gt; right = mid,
-                <span class="bool-val">false </span>=&gt; <span class="kw">match </span>pattern.cmp(<span class="kw-2">&amp;</span>suffix[..pattern.len().min(suffix.len())]) {
-                    Ordering::Less =&gt; right = mid,
-                    Ordering::Greater =&gt; left = mid + <span class="number">1</span>,
-                    Ordering::Equal =&gt; <span class="kw">break</span>,
-                },
+<span class="doccomment">/// Perform a binary search to find occurrences of a pattern in the text.
+///
+/// Args:
+///     pattern (str): The pattern to search for.
+///
+/// Returns:
+///     List[int]: A list of starting positions where the pattern occurs in the text.
+</span><span class="kw">fn </span>search(<span class="kw-2">&amp;</span><span class="self">self</span>, pattern: <span class="kw-2">&amp;</span>str) -&gt; PyResult&lt;Vec&lt;usize&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>left = <span class="number">0</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>right = <span class="self">self</span>.sa.len();
+    <span class="kw">let </span><span class="kw-2">mut </span>results = Vec::new();
+
+    <span class="comment">// Handle empty pattern or text
+    </span><span class="kw">if </span>pattern.is_empty() || <span class="self">self</span>.text.is_empty() {
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(results);
+    }
+
+    <span class="comment">// Perform binary search to find the first occurrence of the pattern
+    </span><span class="kw">while </span>left &lt; right {
+        <span class="kw">let </span>mid = (left + right) / <span class="number">2</span>;
+        <span class="kw">let </span>suffix = <span class="kw-2">&amp;</span><span class="self">self</span>.text[<span class="self">self</span>.sa[mid]..];
+
+        <span class="kw">let </span>cmp_result = <span class="kw">if </span>suffix.len() &lt; pattern.len() {
+            pattern.cmp(suffix)
+        } <span class="kw">else </span>{
+            pattern.cmp(<span class="kw-2">&amp;</span>suffix[..pattern.len()])
+        };
+
+        <span class="kw">match </span>cmp_result {
+            Ordering::Less =&gt; right = mid,
+            Ordering::Greater =&gt; left = mid + <span class="number">1</span>,
+            Ordering::Equal =&gt; {
+                <span class="comment">// If we found a match, find all occurrences
+                </span><span class="kw">let </span><span class="kw-2">mut </span>match_pos = mid;
+
+                <span class="comment">// Check to the left for any more matches
+                </span><span class="kw">while </span>match_pos &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.text[<span class="self">self</span>.sa[match_pos - <span class="number">1</span>]..].starts_with(pattern) {
+                    match_pos -= <span class="number">1</span>;
+                }
+
+                <span class="comment">// Collect all matching positions
+                </span><span class="kw">while </span>match_pos &lt; <span class="self">self</span>.sa.len() &amp;&amp; <span class="self">self</span>.text[<span class="self">self</span>.sa[match_pos]..].starts_with(pattern) {
+                    results.push(<span class="self">self</span>.sa[match_pos]);
+                    match_pos += <span class="number">1</span>;
+                }
+
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(results);
             }
         }
+    }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>results = Vec::new();
-        <span class="kw">while </span>left &lt; <span class="self">self</span>.sa.len() &amp;&amp; <span class="self">self</span>.text[<span class="self">self</span>.sa[left]..].starts_with(pattern) {
-            results.push(<span class="self">self</span>.sa[left]);
-            left += <span class="number">1</span>;
-        }
+    <span class="prelude-val">Ok</span>(results)
+}
 
-        <span class="prelude-val">Ok</span>(results)
+    <span class="doccomment">/// Get all suffixes of the text.
+    ///
+    /// Returns:
+    ///     List[str]: A list of all suffixes in the text.
+    </span><span class="kw">fn </span>get_suffixes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PyResult&lt;Vec&lt;String&gt;&gt; {
+        <span class="kw">let </span>suffixes: Vec&lt;String&gt; = <span class="self">self</span>.sa.iter().map(|<span class="kw-2">&amp;</span>i| <span class="self">self</span>.text[i..].to_string()).collect();
+        <span class="prelude-val">Ok</span>(suffixes)
     }
 }
 
 <span class="kw">impl </span>SuffixArray {
     <span class="kw">fn </span>build_suffix_array(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">let </span>n = <span class="self">self</span>.text.len();
+        <span class="kw">if </span>n == <span class="number">0 </span>{
+            <span class="kw">return</span>;
+        }
+
         <span class="kw">let </span><span class="kw-2">mut </span>rank = <span class="macro">vec!</span>[<span class="number">0</span>; n];
         <span class="kw">let </span><span class="kw-2">mut </span>tmp = <span class="macro">vec!</span>[<span class="number">0</span>; n];
 
-        <span class="comment">// Initialize ranks
+        <span class="comment">// Initialize ranks with ASCII values
         </span><span class="kw">for </span>(i, <span class="kw-2">&amp;</span>c) <span class="kw">in </span><span class="self">self</span>.text.as_bytes().iter().enumerate() {
             rank[i] = c <span class="kw">as </span>usize;
         }
 
-        <span class="kw">for </span>k <span class="kw">in </span><span class="number">1</span>..n {
-            <span class="self">self</span>.sa.sort_by_key(|<span class="kw-2">&amp;</span>i| {
-                <span class="kw">if </span>i + k &lt; n {
-                    (rank[i], rank[i + k])
-                } <span class="kw">else </span>{
-                    (rank[i], <span class="number">0</span>)
-                }
+        <span class="kw">let </span><span class="kw-2">mut </span>k = <span class="number">1</span>;
+        <span class="kw">while </span>k &lt; n {
+            <span class="comment">// Sort suffixes based on their first 2*k characters
+            </span><span class="self">self</span>.sa.sort_by_key(|<span class="kw-2">&amp;</span>i| {
+                <span class="kw">let </span>next_rank = <span class="kw">if </span>i + k &lt; n { rank[i + k] } <span class="kw">else </span>{ <span class="number">0 </span>};
+                (rank[i], next_rank)
             });
 
-            tmp[<span class="self">self</span>.sa[<span class="number">0</span>]] = <span class="number">0</span>;
+            <span class="comment">// Update ranks
+            </span>tmp[<span class="self">self</span>.sa[<span class="number">0</span>]] = <span class="number">0</span>;
             <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..n {
-                tmp[<span class="self">self</span>.sa[i]] = tmp[<span class="self">self</span>.sa[i - <span class="number">1</span>]]
-                    + <span class="kw">if </span>(rank[<span class="self">self</span>.sa[i]], rank[<span class="self">self</span>.sa[i] + k.min(n - <span class="self">self</span>.sa[i])]) 
-                         != (rank[<span class="self">self</span>.sa[i - <span class="number">1</span>]], rank[<span class="self">self</span>.sa[i - <span class="number">1</span>] + k.min(n - <span class="self">self</span>.sa[i - <span class="number">1</span>])]) {
-                        <span class="number">1
-                    </span>} <span class="kw">else </span>{
-                        <span class="number">0
-                    </span>};
+                <span class="kw">let </span>curr_pair = (
+                    rank[<span class="self">self</span>.sa[i]], 
+                    <span class="kw">if </span><span class="self">self</span>.sa[i] + k &lt; n { rank[<span class="self">self</span>.sa[i] + k] } <span class="kw">else </span>{ <span class="number">0 </span>}
+                );
+                <span class="kw">let </span>prev_pair = (
+                    rank[<span class="self">self</span>.sa[i - <span class="number">1</span>]], 
+                    <span class="kw">if </span><span class="self">self</span>.sa[i - <span class="number">1</span>] + k &lt; n { rank[<span class="self">self</span>.sa[i - <span class="number">1</span>] + k] } <span class="kw">else </span>{ <span class="number">0 </span>}
+                );
+                
+                tmp[<span class="self">self</span>.sa[i]] = tmp[<span class="self">self</span>.sa[i - <span class="number">1</span>]] + (curr_pair != prev_pair) <span class="kw">as </span>usize;
             }
-            std::mem::swap(<span class="kw-2">&amp;mut </span>rank, <span class="kw-2">&amp;mut </span>tmp);
 
-            <span class="kw">if </span>rank[<span class="self">self</span>.sa[n - <span class="number">1</span>]] == n - <span class="number">1 </span>{
+            <span class="comment">// Swap rank arrays
+            </span>std::mem::swap(<span class="kw-2">&amp;mut </span>rank, <span class="kw-2">&amp;mut </span>tmp);
+
+            <span class="comment">// Early termination if all suffixes are sorted
+            </span><span class="kw">if </span>rank[<span class="self">self</span>.sa[n - <span class="number">1</span>]] == n - <span class="number">1 </span>{
                 <span class="kw">break</span>;
             }
+
+            k <span class="kw-2">*</span>= <span class="number">2</span>;
         }
     }
 }
